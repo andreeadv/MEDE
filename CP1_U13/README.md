@@ -1,41 +1,41 @@
 # Fișe de Date (Data Cards) - CP1
-**Proiect:** Analiza Insulei de Căldură Urbane (București)
-**Unitatea de analiză:** Grid spațial de 500m x 500m
+
+În cadrul acestei etape, am extras, procesat și aliniat spațial date provenite din patru surse independente. Pentru a asigura compatibilitatea în vederea analizei, toate seturile de date au fost reproiectate și agregate pe un grid comun de 500m x 500m (Sistem de coordonate: EPSG:32635). 
 
 ---
 
 ### 1. Sursa 1: Temperatura Suprafeței Terestre (Termic)
-* **Nume:** USGS Landsat 9 (Level 2, Collection 2, Banda ST_B10)
-* **Proveniență:** USGS și NASA (date descărcate prin Google Earth Engine)
-* **Perioadă:** 1 iunie – 31 august 2026 (medie estivală)
-* **Rezoluție spațială/temporală:** 30m rezoluție spațială nativă / 16 zile rezoluție temporală (datele au fost agregate la gridul de 500m)
-* **Unități:** Grade Celsius (°C)
-* **Goluri:** Pixeli cu date lipsă din cauza acoperirii noroase sau a umbrelor norilor.
-* **Licență:** Domeniu Public (Public Domain - date deschise și gratuite).
+* **Nume set de date:** USGS Landsat 9 (Level 2, Collection 2, Banda ST_B10).
+* **Proveniență:** United States Geological Survey (USGS) și NASA, date extrase și procesate prin Google Earth Engine.
+* **Perioadă:** 1 iunie – 31 august 2026. Am ales calcularea unei medii pe sezonul estival pentru a surprinde fenomenul de insulă de căldură la intensitatea sa maximă.
+* **Rezoluție spațială/temporală:** Rezoluție spațială nativă de 30m / rezoluție temporală de 16 zile. În script, valorile pixelilor au fost agregate (prin medie) pe celulele de 500m.
+* **Unități:** Grade Celsius (°C), obținute prin aplicarea factorului de scalare nativ și conversia din grade Kelvin.
+* **Goluri de date (Lacune):** Pixeli lipsă (`NaN`) generați de mascarea zonelor cu acoperire noroasă sau umbre ale norilor (s-a utilizat un filtru pentru imagini cu sub 10% nebulozitate).
+* **Licență:** Domeniu Public (Public Domain) – acces liber și gratuit.
 
 ### 2. Sursa 2: Indicele de Vegetație (Optic)
-* **Nume:** Sentinel-2 MSI (Level-2A, Surface Reflectance)
-* **Proveniență:** Programul Copernicus, Agenția Spațială Europeană (date descărcate prin Google Earth Engine)
-* **Perioadă:** 1 iunie – 31 august 2026 (medie estivală)
-* **Rezoluție spațială/temporală:** 10m rezoluție spațială nativă / 5 zile rezoluție temporală (datele au fost agregate la gridul de 500m)
-* **Unități:** NDVI (Normalized Difference Vegetation Index) - valoare adimensională cuprinsă între -1 și 1.
-* **Goluri:** Valori lipsă izolate provocate de nebulozitate sau ceață la momentul trecerii satelitului.
-* **Licență:** Copernicus Sentinel Data Terms and Conditions (utilizare liberă).
+* **Nume set de date:** Sentinel-2 MSI (Level-2A, Surface Reflectance, Harmonized).
+* **Proveniență:** Programul Copernicus (ESA), date extrase prin Google Earth Engine.
+* **Perioadă:** 1 iunie – 31 august 2026 (perioadă aliniată strict cu datele termice pentru coerența analizei).
+* **Rezoluție spațială/temporală:** Rezoluție nativă de 10m (benzile B8 și B4) / rezoluție temporală de 5 zile. Datele au fost mediate pe gridul de 500m.
+* **Unități:** Indicele NDVI (Normalized Difference Vegetation Index) – valoare adimensională teoretică între -1 și 1, care reflectă densitatea și sănătatea vegetației.
+* **Goluri de date (Lacune):** Similar cu datele Landsat, pot exista valori lipsă punctuale cauzate de filtrarea pixelilor cu nori.
+* **Licență:** Copernicus Sentinel Data Terms and Conditions (date deschise, utilizare liberă).
 
-### 3. Sursa 3: Înălțimea Clădirilor (Formă Urbană)
-* **Nume:** GHSL - Global Human Settlement Layer (GHS_BUILT_H)
-* **Proveniență:** Joint Research Centre (JRC) al Comisiei Europene (prin Google Earth Engine)
-* **Perioadă:** Anul de referință 2018 (cel mai recent dataset global disponibil)
-* **Rezoluție spațială/temporală:** 100m rezoluție spațială / model static pentru 2018 (agregat la gridul de 500m)
-* **Unități:** Metri (înălțimea medie a structurilor construite)
-* **Goluri:** Inexistența datelor pentru clădirile și cartierele rezidențiale construite după anul 2018.
-* **Licență:** CC-BY 4.0 (Creative Commons Attribution 4.0 International).
+### 3. Sursa 3: Înălțimea Clădirilor (Formă Urbană - Raster)
+* **Nume set de date:** GHSL - Global Human Settlement Layer (GHS_BUILT_H).
+* **Proveniență:** Joint Research Centre (JRC) al Comisiei Europene, via Google Earth Engine.
+* **Perioadă:** Model de referință pentru anul 2018 (cel mai recent set de date global disponibil pentru acest parametru).
+* **Rezoluție spațială/temporală:** Rezoluție nativă de 100m / set de date static pentru epoca 2018. Valorile au fost agregate (medie) la 500m.
+* **Unități:** Metri (reprezintă înălțimea medie estimată a mediului construit din respectiva celulă).
+* **Goluri de date (Lacune):** Limitarea principală este de natură temporală; clădirile și ansamblurile rezidențiale edificate în București după anul 2018 nu sunt captate în acest model.
+* **Licență:** Creative Commons Attribution 4.0 International (CC-BY 4.0).
 
-### 4. Sursa 4: Amprenta la Sol (Formă Urbană Vectorială)
-* **Nume:** OpenStreetMap (OSM) - clădiri, parcuri și rețea stradală
-* **Proveniență:** Comunitatea OpenStreetMap (date extrase via Overpass API)
-* **Perioadă:** Toamna anului 2026 (extracție la zi)
-* **Rezoluție spațială/temporală:** Precizie vectorială sub-metrică / actualizare temporală continuă (crowdsourcing). Poligoanele au fost intersectate pe gridul de 500m.
-* **Unități:** Fracție (procentaj de acoperire per celulă pentru clădiri și parcuri) și Densitate (lungime liniară per arie pentru drumuri).
-* **Goluri:** Lipsa datelor în zonele periferice necartografiate complet de către voluntari.
-* **Licență:** ODbL (Open Data Commons Open Database License).
+### 4. Sursa 4: Amprenta la Sol și Rețeaua Stradală (Formă Urbană - Vector)
+* **Nume set de date:** OpenStreetMap (OSM) - poligoane pentru clădiri și parcuri, linii pentru infrastructura rutieră.
+* **Proveniență:** Comunitatea globală participativă OpenStreetMap, date descărcate prin Overpass API utilizând biblioteca Python `OSMnx`.
+* **Perioadă:** Date actualizate la zi (extracție realizată în toamna anului 2026).
+* **Rezoluție spațială/temporală:** Date de tip vector cu precizie sub-metrică / actualizare continuă prin crowdsourcing. Geometriile au fost intersectate și decupate exact pe granițele celulelor de 500m.
+* **Unități:** Pentru clădiri și parcuri s-a calculat o **fracție** (procent din aria celulei, cu valori între 0 și 1). Pentru drumuri s-a calculat **densitatea** (lungimea liniară a rețelei raportată la suprafața celulei).
+* **Goluri de date (Lacune):** Lipsuri inerente mapării participative; pot exista omisiuni în cartografierea unor alei, clădiri sau curți în zonele periferice mai puțin active ale orașului.
+* **Licență:** Open Data Commons Open Database License (ODbL).
